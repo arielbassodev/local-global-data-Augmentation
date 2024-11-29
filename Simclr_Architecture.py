@@ -16,7 +16,7 @@ class HeadProjection(nn.Module):
         super().__init__()
         self.backbone = nn.Sequential(*list(backbone.children())[:-1]) # remove the last layer
         self.fc1 = nn.Linear(1000, 400)
-        self.fc2 = nn.Linear(200,200)
+        self.fc2 = nn.Linear(400,200)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))

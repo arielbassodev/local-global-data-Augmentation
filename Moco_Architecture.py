@@ -8,8 +8,8 @@ class MocoModel(nn.Module):
     def __init__(self):
         super().__init__()
         self.encoder = model
-        self.fc1 = nn.Linear(1000,200)
-        self.fc2 = nn.Linear(200, 39)
+        self.fc1 = nn.Linear(1000,400)
+        self.fc2 = nn.Linear(400, 200)
     def forward(self, x):
        x = self.encoder(x)
        x = F.relu(self.fc1(x))
