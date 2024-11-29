@@ -9,6 +9,6 @@ transform = transforms.Compose([
 
 train_set = datasets.ImageFolder(root='C:/Users/abassoma/Documents/Dataset/Indonesian_dataset/indonesian_train_1',transform=transform)
 val_set = datasets.ImageFolder(root='C:/Users/abassoma/Documents/Dataset/Indonesian_dataset/indonesian_train_2',transform=transform)
-batch_size = 32
+batch_size = 128
 train_loader = torch.utils.data.DataLoader(train_set,batch_size,shuffle=True)
 test_loader = torch.utils.data.DataLoader(val_set,batch_size,shuffle=True)
