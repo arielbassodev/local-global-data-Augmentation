@@ -14,7 +14,10 @@ transformation_groups = {
         transforms.ColorJitter(brightness=0.2, contrast=0.2),  
         transforms.ColorJitter(saturation=0.3, hue=0.1),        
         transforms.ColorJitter(brightness=0.4, saturation=0.4), 
-        transforms.ColorJitter(contrast=0.4, hue=0.2),
+        transforms.ColorJitter(contrast=0.4, hue=0.2),           
+    ],
+
+   "GaussianBlur" : [
         transforms.GaussianBlur(kernel_size=(3, 1), sigma=(0.1, 5)),  # Flou gaussien                                                         
         transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.1, 2)),  
         transforms.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 3)),  
@@ -22,8 +25,8 @@ transformation_groups = {
         transforms.GaussianBlur(kernel_size=(3, 1), sigma=(0.5, 1)),  
         transforms.GaussianBlur(kernel_size=(3, 1), sigma=(0.2, 0.8)),  
         transforms.GaussianBlur(kernel_size=(3, 1), sigma=(0.2, 1)),  
-        transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.3, 2))            
-    ],
+        transforms.GaussianBlur(kernel_size=(3, 3), sigma=(0.3, 2)) 
+    ]
 
 
 }

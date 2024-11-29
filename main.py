@@ -48,4 +48,4 @@ def training(train_loader,num_epochs, active_groups):
     plt.legend()
     plt.savefig('Training_loss_simclr_others_essai_4.png')
     plt.show()
-training(train_loader,10, active_groups=["ColorJitter"])
+training(train_loader,70, active_groups=["ColorJitter"])
