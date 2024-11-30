@@ -81,8 +81,8 @@ def global_global_augmentation(image_batch, active_group):
 def local_local_augmentation(batch_image, active_groups):
     
     selected_transformations = get_transformations(active_groups)
-    transform_batch_1 = random_choose(selected_transformations)
-    transform_batch_2 = random_choose(selected_transformations)
+    first_augmentation = random_choose(selected_transformations)
+    second_augmentation = random_choose(selected_transformations)
     image_batch = image_batch.to(device)
     with torch.no_grad():
         predicted_roi = RoI_model(image_batch)
@@ -100,8 +100,8 @@ def local_local_augmentation(batch_image, active_groups):
                 image_permuted = image.transpose(1, 2, 0) 
                 colored_object = image_permuted[y1:y2, x1:x2].copy()
                 colored_object = Image.fromarray((colored_object * 255).astype(np.uint8), mode='RGB')
-                colored_object_transformed_1 = transform_batch_1(colored_object)
-                colored_object_transformed_2 = transform_batch_1(colored_object)
+                colored_object_transformed_1 = first_augmentation(colored_object)
+                colored_object_transformed_2 = first_augmentation(colored_object)
                 colored_object_transformed_1 = np.array(colored_object_transformed_1) / 255.0
                 colored_object_transformed_2 = np.array(colored_object_transformed_2) / 255.0
                 colored_object_transformed_1 = Image.fromarray((colored_object_transformed_1 * 255).astype(np.uint8))
