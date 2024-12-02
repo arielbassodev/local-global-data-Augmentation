@@ -8,6 +8,16 @@ import Augmentation_method as augmentation
 import pytorchDataLoader as loader
 from tqdm import tqdm
 from torchvision import transforms
+import os
+import matplotlib.pyplot as plt
+import numpy as np
+import pytorch_lightning as pl
+import torch.nn as nn
+from PIL import Image
+from sklearn.neighbors import NearestNeighbors
+from sklearn.preprocessing import normalize
+from lightly.data import LightlyDataset
+from lightly.transforms import SimCLRTransform, utils
 
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
@@ -49,3 +59,55 @@ def training(train_loader,num_epochs, active_groups):
     plt.savefig('Training_loss_simclr_others_essai_4.png')
     plt.show()
 training(train_loader,70, active_groups=["ColorJitter"])
+
+netwk = simclr_model.backbone
+num_ftrs = netwk.fc.in_features 
+netwk.fc = nn.Linear(num_ftrs,31)
+
+# Geler toutes les couches du modèle SimCLR pré-entraîné
+for param in netwk.parameters():
+    param.requires_grad = False
+
+# Débloquer uniquement la dernière couche fully connected (fc)
+for param in netwk.fc.parameters():
+    param.requires_grad = True
+
+
+    def __init__(self):
+        super().__init__()
+        self.model = netwk
+        # Définir la loss function
+        self.criterion = nn.CrossEntropyLoss()
+        num_classes = 31
+        # Définir les métriques
+        self.train_acc = TM.Accuracy(task='multiclass', num_classes=num_classes)
+        self.train_top3 = TM.Accuracy(task='multiclass', num_classes=num_classes, top_k=3)
+        
+        self.val_acc = TM.Accuracy(task='multiclass', num_classes=num_classes)
+        self.val_top3 = TM.Accuracy(task='multiclass', num_classes=num_classes, top_k=3)
+        self.val_recall = TM.Recall(task='multiclass', num_classes=num_classes)
+
+    def training_step(self, batch, batch_idx):
+        images, targets = batch
+        logits = self.model(images)
+        loss = self.criterion(logits, targets)
+        preds = torch.argmax(logits, dim=-1)
+        self.train_acc(preds, targets)
+        self.log('train_loss', loss, on_step=True, on_epoch=True)
+        self.log('train_acc', self.train_acc, on_step=True, on_epoch=True)
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        images, targets = batch
+        logits = self.model(images)
+        loss = self.criterion(logits, targets)
+        preds = torch.argmax(logits, dim=-1)
+        self.val_acc(preds, targets)
+        self.val_recall(preds, targets)  
+        self.log('val_loss', loss, on_step=True, on_epoch=True)
+        self.log('val_acc', self.val_acc, on_step=True, on_epoch=True)
+        self.log('val_recall', self.val_recall, on_step=True, on_epoch=True)
+
+    def configure_optimizers(self):
+        return optim.SGD(self.model.parameters(), lr=0.001, momentum=0.9)
+
