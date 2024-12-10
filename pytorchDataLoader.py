@@ -12,3 +12,4 @@ val_set = datasets.ImageFolder(root='C:/Users/abassoma/Documents/Dataset/Indones
 batch_size = 128
 train_loader = torch.utils.data.DataLoader(train_set,batch_size,shuffle=True)
 test_loader = torch.utils.data.DataLoader(val_set,batch_size,shuffle=True)
+
