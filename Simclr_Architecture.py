@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-backbone = resnet50(pretrained=True).to('cuda')
+backbone = resnet50(pretrained=True).to(device)
 class Identity(nn.Module):
     def __init__(self):
         super(Identity, self).__init__()
@@ -23,7 +23,7 @@ class HeadProjection(nn.Module):
         x = F.relu(self.fc2(x))
         return x
 
-Projection = HeadProjection().to('cuda')
+Projection = HeadProjection().to(device)
 
 class SIMCLR(nn.Module):
     def __init__(self,backbone,projection):
