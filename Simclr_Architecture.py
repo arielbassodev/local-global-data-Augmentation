@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 backbone = resnet50(pretrained=True).to(device)
+backbone = nn.Sequential(*list(backbone.children())[:-1]) 
 class Identity(nn.Module):
     def __init__(self):
         super(Identity, self).__init__()
@@ -14,7 +15,6 @@ class Identity(nn.Module):
 class HeadProjection(nn.Module):
     def __init__(self):
         super().__init__()
-        self.backbone = nn.Sequential(*list(backbone.children())[:-1]) # remove the last layer
         self.fc1 = nn.Linear(1000, 400)
         self.fc2 = nn.Linear(400,200)
 
