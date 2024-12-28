@@ -3,8 +3,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-backbone = resnet50(pretrained=True).to(device)
-backbone = nn.Sequential(*list(backbone.children())[:-1]) 
+backbone = resnet50(pretrained=True).to('cpu')
+backbone = nn.Sequential(*list(backbone.children())[:-1])
 class HeadProjection(nn.Module):
     def __init__(self):
         super().__init__()
@@ -25,7 +25,8 @@ class SIMCLR(nn.Module):
         self.projection = Projection
     
     def forward(self,x):
-        x=self.projection(self.backbone(x))
+        x=self.backbone(x)
+        x = torch.flatten(x, start_dim=1)
+        x = self.projection(x)
         return x
 simclr_model = SIMCLR(backbone,Projection)
-
