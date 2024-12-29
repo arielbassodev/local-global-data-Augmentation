@@ -3,18 +3,11 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-backbone = resnet50(pretrained=True).to('cpu')
-
-from torchvision.models import resnet50
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class HeadProjection(nn.Module):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(2048, 200)
+        self.fc1 = nn.Linear(2048,200)
         self.fc2 = nn.Linear(200,100)
 
     def forward(self, x):
@@ -25,10 +18,10 @@ class HeadProjection(nn.Module):
 Projection = HeadProjection().to('cpu')
 
 class SIMCLR(nn.Module):
-    def __init__(self,projection, backbone):
+    def __init__(self,Projection_Head, backbone):
         super().__init__()
         self.backbone = backbone
-        self.projection = Projection
+        self.Projection_Head = Projection
     
     def forward(self,x):
         x=self.backbone(x)
