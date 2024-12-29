@@ -127,7 +127,7 @@ class Module(L.LightningModule):
         return optim.SGD(self.model.parameters(), lr=0.001, momentum=0.9)
 
 my_module = Module()
-trainer = L.Trainer(max_epochs=40)
+trainer = L.Trainer(max_epochs=100)
 trainer.fit(
     my_module,
     train_loader, 
