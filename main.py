@@ -22,6 +22,7 @@ from lightly.transforms import SimCLRTransform, utils
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 train_loader = loader.train_loader
+test_loader = loader.test_loader
 simclr_model = simclr.SIMCLR(simclr.backbone,simclr.HeadProjection)
 local_global = augmentation.local_global_augmentation
 criterion = NTXentLoss()
@@ -73,8 +74,6 @@ class classifier(nn.Module):
         x = self.fc(x)
         return x
 
-
-
 for param in simclr_model.backbone.parameters():
     param.requires_grad = False
     
@@ -91,7 +90,7 @@ class Module(L.LightningModule):
 
     def __init__(self):
         super().__init__()
-        self.model = netwk
+        self.model = classifier_model
         # Définir la loss function
         self.criterion = nn.CrossEntropyLoss()
         num_classes = 31
@@ -127,3 +126,10 @@ class Module(L.LightningModule):
     def configure_optimizers(self):
         return optim.SGD(self.model.parameters(), lr=0.001, momentum=0.9)
 
+my_module = Module()
+trainer = L.Trainer(max_epochs=40)
+trainer.fit(
+    my_module,
+    train_loader, 
+    test_loader
+)
