@@ -60,18 +60,34 @@ def training(train_loader,num_epochs, active_groups):
     plt.show()
 training(train_loader,70, active_groups=["ColorJitter"])
 
-netwk = simclr_model.backbone
-num_ftrs = netwk.fc.in_features 
-netwk.fc = nn.Linear(num_ftrs,31)
 
-# Geler toutes les couches du modèle SimCLR pré-entraîné
-for param in netwk.parameters():
+
+class classifier(nn.Module):
+   def __init__(self, backbone, num_classes):
+        super().__init__()
+        self.backbone = backbone
+        self.fc = nn.Linear(2048, num_classes)
+   def forward(self, x):
+        x = self.backbone(x)
+        x = x.flatten(start_dim=1)
+        x = self.fc(x)
+        return x
+
+
+
+for param in simclr_model.backbone.parameters():
     param.requires_grad = False
+    
+classifier_model = classifier(simclr_model.backbone, 31)
 
-# Débloquer uniquement la dernière couche fully connected (fc)
-for param in netwk.fc.parameters():
-    param.requires_grad = True
+import lightning as L
+import torch
+import torch.nn as nn
+import torch.optim as optim
+import torchmetrics as TM
+import torch.nn.functional as F
 
+class Module(L.LightningModule):
 
     def __init__(self):
         super().__init__()
