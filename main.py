@@ -23,6 +23,7 @@ from lightly.transforms import SimCLRTransform, utils
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 train_loader = loader.train_loader
 test_loader = loader.test_loader
+fine_tuning_loader = loader.fune_tune_set
 simclr_model = simclr.SIMCLR(simclr.backbone,simclr.HeadProjection)
 local_global = augmentation.local_global_augmentation
 criterion = NTXentLoss()
@@ -130,5 +131,5 @@ trainer = L.Trainer(max_epochs=100)
 trainer.fit(
     my_module,
     train_loader, 
-    test_loader
+    fine_tuning_loader
 )
