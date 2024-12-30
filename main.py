@@ -62,7 +62,6 @@ def training(train_loader,num_epochs, active_groups):
 training(train_loader,70, active_groups=["ColorJitter"])
 
 
-
 class classifier(nn.Module):
    def __init__(self, backbone, num_classes):
         super().__init__()
